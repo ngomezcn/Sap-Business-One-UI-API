@@ -80,17 +80,17 @@ namespace SAPB1_UI_API
             {
                 SBO_Application.SetStatusBarMessage("Menu item: " + pVal.MenuUID + " sent an event BEFORE SAP Business One processes it.", SAPbouiCOM.BoMessageTime.bmt_Long, true);
 
-                // Este codigo se ejecutara antes de que SBO haya procesado el evento
+                // Este código se ejecutará antes de que SBO procese el evento
                 // ...
                 // ... 
 
-                BubbleEvent = false; // Ademas podemos evitar que SBO procese el evento si ponemos BubbleEvent = false
+                BubbleEvent = false; // Además podemos evitar que SBO procese el evento si ponemos BubbleEvent = false
             }
             else
             {
                 SBO_Application.SetStatusBarMessage("Menu item: " + pVal.MenuUID + " sent an event AFTER SAP Business One processes it.", SAPbouiCOM.BoMessageTime.bmt_Long, true);
 
-                // Este codigo se ejecutara despues de que SBO haya procesado el evento
+                //  Este código se ejecutará despues de que SBO procese el eventi
                 // ...
                 // ... 
             }
