@@ -147,7 +147,7 @@ namespace SAPB1_UI_API
             // Creando parametros del formulario
             oCreationParams = SBO_Application.CreateObject(SAPbouiCOM.BoCreatableObjectType.cot_FormCreationParams);
             oCreationParams.BorderStyle = SAPbouiCOM.BoFormBorderStyle.fbs_Fixed;
-            oCreationParams.UniqueID = "dfga";
+            oCreationParams.UniqueID = "dasfdfga";
 
             // Creando formulario a partir de los parametros indicados
             
@@ -235,7 +235,6 @@ namespace SAPB1_UI_API
 
             oComboBox = ((SAPbouiCOM.ComboBox)(oItem.Specific));
             oComboBox.DataBind.SetBound(true, "", "CombSource"); // Bindeamos el Edit Text a los datos de entrada creados anteriormente 
-
             oComboBox.ValidValues.Add("1", "Combo Value 1");
             oComboBox.ValidValues.Add("2", "Combo Value 2");
             oComboBox.ValidValues.Add("3", "Combo Value 3");
@@ -243,23 +242,12 @@ namespace SAPB1_UI_API
 
         private void GuardarComoXML()
         {
-            System.Xml.XmlDocument oXmlDoc = null;
+            System.Xml.XmlDocument oXmlDoc = oXmlDoc = new System.Xml.XmlDocument();
 
-            oXmlDoc = new System.Xml.XmlDocument();
-
-            string sXmlString = null;
-
-            // get the form as an XML string
-            sXmlString = oForm.GetAsXML();
-
-            // load the form's XML string to the
-            // XML document object
+            string sXmlString = oForm.GetAsXML();
             oXmlDoc.LoadXml(sXmlString);
 
-            string sPath = null;
-
-            sPath = System.IO.Directory.GetParent(Application.StartupPath).ToString();
-
+            string sPath = System.IO.Directory.GetParent(Application.StartupPath).ToString();
             oXmlDoc.Save((sPath + @"\MySimpleForm.xml"));
         }
     }
