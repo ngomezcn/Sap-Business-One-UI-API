@@ -38,17 +38,19 @@ namespace SAPB1_UI_API
             bindEventHandlersToSBO();
         }
 
-        public void bindEventHandlersToSBO()
+        private void bindEventHandlersToSBO()
         {
             // Eventos gestionados por SBO_Application, se debe pasar el evento tal como se especifica en la documentación
-            // Para ver todos los tipos de eventos gestiona SBO ver la interfaz: SAPbouiCOM._IApplicationEvents_Event 
+            // Para ver todos los tipos de eventos que gestiona SBO ver la interfaz: SAPbouiCOM._IApplicationEvents_Event 
 
             SBO_Application.AppEvent += new SAPbouiCOM._IApplicationEvents_AppEventEventHandler(SBO_Application_AppEvent);
             SBO_Application.MenuEvent += new SAPbouiCOM._IApplicationEvents_MenuEventEventHandler(SBO_Application_MenuEvent);
+            SBO_Application.ItemEvent += new SAPbouiCOM._IApplicationEvents_ItemEventEventHandler(SBO_Application_ItemEvent);
         }
         
-        // Recibe los eventos a nivel de aplicacion SBO. Ver -> [BoAppEventTypes Enumeration] 
-        public void SBO_Application_AppEvent(SAPbouiCOM.BoAppEventTypes EventType) 
+        // Gestiona los eventos a nivel de aplicacion SBO.
+        // +info sobre los eventos de aplicacion: Help Center -> [BoAppEventTypes Enumeration] 
+        private void SBO_Application_AppEvent(SAPbouiCOM.BoAppEventTypes EventType) 
         {
             switch (EventType)
             {
@@ -82,14 +84,14 @@ namespace SAPB1_UI_API
             }
         }
 
-        // Recibe los eventos de interacción con los menús -> [Barra superior, Barra de herramientas y Menú general]
+        // Gestiona los eventos de interacción con los menús -> [Barra superior, Barra de herramientas y Menú general]
         // Aclaracion:
         // 1. Un evento de menu se considera una interacción con uno de los botones para realizar una gestión, ej: abrir formulario inter. comerc., asistente de generar PDF, abrir calendario...
         // 2. No se considera evento de menú, ej: desplegar un submenú en la barra superior o abrir una carpeta en el menú general...
         // 3. Tampoco se considera evento de menú, interactuar con la posible ui de gestión abierto desde el menú, ej: formulario inter. comerc., asistente de generar PDF, calendario...
         private void SBO_Application_MenuEvent(ref SAPbouiCOM.MenuEvent pVal, out bool BubbleEvent) 
         {
-            BubbleEvent = false;
+            BubbleEvent = true; 
             if (pVal.BeforeAction == true) // Podemos gestionar el evento antes que SAP
             {
                 SBO_Application.SetStatusBarMessage("Menu item: " + pVal.MenuUID + " enviado ANTES de que SAP lo procese.", SAPbouiCOM.BoMessageTime.bmt_Long, true);
@@ -99,14 +101,32 @@ namespace SAPB1_UI_API
                 // ... 
 
                 BubbleEvent = true; // Podemos evitar que SBO llegue a procesar el evento si ponemos BubbleEvent = false
+                // Extra: SAP propone que a través de esta vía podemos mostrar nuestros propios formularios en lugar de los predefinidos por SBO
             }
             else
             {
                 SBO_Application.SetStatusBarMessage("Menu item: " + pVal.MenuUID + " enviado DESPUES de que SAP lo procese.", SAPbouiCOM.BoMessageTime.bmt_Long, true);
 
-                //  Este código se ejecutaria despues de que SBO procese el evento
+                // Este código se ejecutaría después de que SBO procese el evento
                 // ...
                 // ... 
+            }
+        }
+
+        // Todos los eventos son en esencia un item event (a excepcion de unos muy concretos)
+        private void SBO_Application_ItemEvent(string FormUID, ref SAPbouiCOM.ItemEvent pVal, out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+
+            if(pVal.FormType != 0)
+            {
+                SAPbouiCOM.BoEventTypes EventEnum = pVal.EventType; // Help Center -> [BoEventTypes Enumeration] 
+
+                // Aquí se podrían indicar validaciones para filtrar los eventos que nos interesan: ej: Al dejar de editar el field Nombre del form inter. comerc.
+                // ...
+                // ...
+
+                Console.Write("An " + EventEnum.ToString() + " has been sent by a form with the unique ID: " + FormUID + "\n");
             }
         }
     }

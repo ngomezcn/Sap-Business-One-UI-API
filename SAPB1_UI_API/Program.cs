@@ -17,9 +17,6 @@ namespace SAPB1_UI_API
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Console.Write("Iniciando");
-
-
             SBO_UI_API sBO_UI_API = new SBO_UI_API();
 
             Application.Run();
